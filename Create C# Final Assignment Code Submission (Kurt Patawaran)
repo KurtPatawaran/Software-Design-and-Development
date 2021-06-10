@@ -1,0 +1,363 @@
+using System;
+public static class TicTacToe
+{
+    public static bool Player1Turn = true;
+    public static Board Gameboard = new Board();
+    public static int numTurns = 0;
+    static void Main()
+
+    {
+        bool endGame = false;
+        
+
+        do
+        {
+            
+            Console.WriteLine("\nWelcome to a game of Tic Tac Toe");
+            Console.WriteLine("\n==================================");
+            Console.WriteLine("1 - Play Game");
+            Console.WriteLine("2 - Instructions");
+            Console.WriteLine("3 - Exit Game");
+
+            Console.WriteLine("==================================");
+            Console.WriteLine("\nPlease Select a number");
+            int menuOptions = int.Parse(Console.ReadLine());
+
+
+
+            Console.Clear();
+
+            switch (menuOptions)
+            {
+                case 1:
+                        RestartBoard();
+                    StartGame();            
+                    break;
+
+
+               case 2:
+                    MenuInstructions();
+                    Console.WriteLine("Press any key to return to the main menu.");
+                    Console.ReadLine();
+                    break;
+
+                case 3:
+                    
+                    return;
+
+                default:
+                    Console.ReadLine();
+                    break;
+
+            }
+            Console.Clear();
+        } while (!endGame);
+
+
+        void RestartBoard()
+        {
+            Gameboard = new Board();
+            numTurns = 0;
+        }
+        static void StartGame()
+        {
+            while (true)
+            {
+                Gameboard.DisplayBoard();
+                Gameboard.Chooserow();
+                if (CheckForWinner())
+                    break;
+                Player1Turn = !Player1Turn;
+                numTurns++;
+                if (numTurns >= 9)
+                {
+                    Console.WriteLine("It's a draw!");
+                    break;
+                }
+            }
+            Console.WriteLine("Press any key to return to main menu");
+      
+            Console.ReadKey(true);
+        }
+    }
+
+    static void MenuInstructions()
+    {
+        Console.WriteLine(" RULES FOR TIC-TAC-TOE. ");
+        Console.WriteLine(" 1. The game is played on a grid that's 3 squares by 3 squares.");
+        Console.WriteLine(" 2. Player X will always start first.");
+        Console.WriteLine(" 3. To place X and O on the grid, the player must locate a desired box by the use of coordinated rows and columns");
+        Console.WriteLine("Rows");
+        Console.WriteLine("[ 1 ][ 2 ][ 3 ]");
+        Console.WriteLine("[ 1 ][ 2 ][ 3 ]");
+        Console.WriteLine("[ 1 ][ 2 ][ 3 ]");
+        Console.WriteLine("Columns");
+        Console.WriteLine("[ 1 ][ 1 ][ 1 ]");
+        Console.WriteLine("[ 2 ][ 2 ][ 2 ]");
+        Console.WriteLine("[ 3 ][ 3 ][ 3 ]");
+        Console.WriteLine(" 4. The first player to get 3 of their marks in a row (Vertically, Horizontally, or Diagonally) is the winner.");
+        Console.WriteLine(" 5. When all 9 squares are full, the game is over and it is declared a draw.");
+        Console.WriteLine("==================================");
+        
+    }
+    static bool CheckForWinner()
+    {
+
+        if (Horizontal() || Vertical() || Diagonal())
+            return true;
+        else return false;
+        bool Horizontal()
+        {
+            for (int i = 0; i < Gameboard.rows.Length; ++i)
+            {
+                bool TheWinner = true;
+                bool isX = false;
+                int[] Columns = Gameboard.rows[i].Columns;
+                int checkHorizontal = Columns[0];
+                switch (checkHorizontal)
+                {
+                    case 0:
+                        continue;
+                    case 1:
+                        isX = true;
+                        break;
+                    case 2:
+                        isX = false;
+                        break;
+                }
+                for (int j = 0; j < Columns.Length; ++j)
+                {
+                    if (Columns[j] != checkHorizontal)
+                    {
+                        TheWinner = false;
+                        break;
+                    }
+                }
+                if (TheWinner)
+                {
+                    WinnerMessage(isX);
+                    return true;
+                }
+            }
+            return false;
+        }
+        bool Vertical()
+        {
+            bool TheWinner = true;
+            bool isX = false;
+            int[] Columns = Gameboard.rows[0].Columns;
+            for (int i = 0; i < 3; ++i)
+            {
+                TheWinner = true;
+                int checkVertical = Columns[i];
+                switch (checkVertical)
+                {
+                    case 0:
+                        continue;
+                    case 1:
+                        isX = true;
+                        break;
+                    case 2:
+                        isX = false;
+                        break;
+                }
+                for (int j = 0; j < 3; ++j)
+                {
+                    if (Gameboard.rows[j].Columns[i] != checkVertical)
+                    {
+                        TheWinner = false;
+                        break;
+                    }
+                }
+                if (TheWinner)
+                {
+                    WinnerMessage(isX);
+                    return true;
+                }
+            }
+            return false;
+        }
+        bool Diagonal()
+        {
+            bool Winner = true;
+            bool isX = false;
+            int firstColumn = Gameboard.rows[0].Columns[0];
+            switch (firstColumn)
+            {
+                case 0:
+                    Winner = false;
+                    break;
+                case 1:
+                    isX = true;
+                    break;
+                case 2:
+                    isX = false;
+                    break;
+            }
+            for (int i = 0; i < 3; ++i)
+            {
+                if (Gameboard.rows[i].Columns[i] != firstColumn)
+                {
+                    Winner = false;
+                    break;
+                }
+            }
+            if (Winner)
+            {
+                WinnerMessage(isX);
+                return true;
+            }
+            Winner = true;
+            int thirdColumn = Gameboard.rows[0].Columns[2];
+            switch (thirdColumn)
+            {
+                case 0:
+                    Winner = false;
+                    break;
+                case 1:
+                    isX = true;
+                    break;
+                case 2:
+                    isX = false;
+                    break;
+            }
+            for (int i = 0; i < 3; ++i)
+            {
+                if (Gameboard.rows[i].Columns[2 - i] != thirdColumn)
+                {
+                    Winner = false;
+                    break;
+                }
+            }
+            if (Winner)
+            {
+                WinnerMessage(isX);
+                return true;
+            }
+            return false;
+        }
+        void WinnerMessage(bool isX)
+        {
+            string TheWinner = "";
+            if (isX)
+                TheWinner = " X";
+            else
+                TheWinner = " O";
+            
+            Console.WriteLine("Congratulation the winner is " + TheWinner + " PLayer!"); 
+        }
+    }
+}
+public class Board
+{
+    public RowNColumn[] rows;
+    public Board()
+    {
+        rows = new RowNColumn[3];
+        for (int i = 0; i < 3; i++)
+            rows[i] = new RowNColumn();
+    }
+    public void DisplayBoard()
+    {
+        for (int i = 0; i < rows.Length; ++i)
+            rows[i].DisplayContents();
+    }
+    public void Chooserow()
+    {
+        string input = "";
+        int rowNum = 0;
+        Console.WriteLine("Player 1 is X, Player 2 Is O");
+        Console.WriteLine("Type a row number that's from top to bottom (1, 2, or 3)");
+        input = Console.ReadLine();
+        if (int.TryParse(input, out rowNum))
+        {
+            if (rowNum > 3 || rowNum < 1)
+            {
+                Console.WriteLine("Invalid row number. Please try again.");
+                Console.WriteLine("=====================================");
+                Chooserow();
+                return;
+            }
+            rows[rowNum - 1].ChooseColumn(TicTacToe.Player1Turn);
+        }
+        else
+        {
+            Console.WriteLine("Invalid row number. Try again.");
+            Console.WriteLine("=====================================");
+            Chooserow();
+            return;
+        }
+    }
+}
+public class RowNColumn
+{
+    public int[] Columns;
+
+    public void ChooseColumn(bool isX)
+    {
+        string input;
+        int ColumnNumber;
+        Console.WriteLine("=====================================");
+        Console.WriteLine("Type a Column number from left to right (1, 2, or 3)");
+        input = Console.ReadLine();
+        if (int.TryParse(input, out ColumnNumber))
+        {
+            Console.WriteLine("=====================================");
+            if (ColumnNumber > 3 || ColumnNumber < 1)
+            {
+                Console.WriteLine("Chosen number is Invalid. Please Try again.");
+                Console.WriteLine("=====================================");
+                ChooseColumn(isX);
+                return;
+            }
+            if (Columns[ColumnNumber - 1] != 0)
+            {
+                Console.WriteLine("That spot is filled. Please choose another.");
+                Console.WriteLine("=====================================");
+                TicTacToe.Gameboard.Chooserow();
+                return;
+            }
+
+            if (isX)
+            {
+                Columns[ColumnNumber - 1] = 1;
+            }
+            else
+            {
+                Columns[ColumnNumber - 1] = 2;
+            }
+                
+        }
+        else
+        {
+            Console.WriteLine("Chosen number is Invalid. Please Try again.");
+            Console.WriteLine("=====================================");
+            ChooseColumn(isX);
+        }
+    }
+
+    public void DisplayContents()
+
+    {
+        string lineToWrite = "";
+        for (int i = 0; i < Columns.Length; ++i)
+        {
+
+            if (Columns[i] == 0)
+                lineToWrite += "[ _ ]";
+            else if (Columns[i] == 1)
+                lineToWrite += "[ X ]";
+            else if (Columns[i] == 2)
+                lineToWrite += "[ O ]";
+        }
+      
+        Console.WriteLine(lineToWrite);
+    }
+
+    public RowNColumn()
+    {
+        Columns = new int[3];
+    }
+}
+
+    
